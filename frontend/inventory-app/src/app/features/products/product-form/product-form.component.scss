@@ -1,0 +1,21 @@
+.loading-center { display: flex; justify-content: center; padding: 64px; }
+
+.img-preview {
+  img {
+    max-height: 140px;
+    border-radius: var(--r-md);
+    object-fit: cover;
+    border: 1px solid var(--border);
+  }
+}
+
+.form-footer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-top: 16px;
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+mat-spinner { display: inline-block; }

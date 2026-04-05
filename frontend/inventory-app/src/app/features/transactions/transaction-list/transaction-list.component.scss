@@ -1,0 +1,14 @@
+.loading-center { display: flex; justify-content: center; padding: 64px; }
+.table-responsive { overflow-x: auto; }
+.mat-table-full { width: 100%; }
+
+.product-cell { display: flex; flex-direction: column; gap: 2px; }
+.product-name { font-weight: 600; font-size: 0.875rem; }
+.product-stock { font-size: 0.75rem; color: var(--tx-muted); }
+.detail-cell { max-width: 200px; color: var(--tx-secondary); font-size: 0.8rem; }
+
+.badge mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
