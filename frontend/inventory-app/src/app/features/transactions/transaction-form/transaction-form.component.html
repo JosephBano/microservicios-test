@@ -1,0 +1,137 @@
+<div class="page-container" @pageEnter>
+  <div class="page-header">
+    <div class="section-title">
+      <mat-icon>{{ isEdit() ? 'edit' : 'add_circle' }}</mat-icon>
+      <h1>{{ isEdit() ? 'Editar Transacción' : 'Nueva Transacción' }}</h1>
+    </div>
+    <button mat-button (click)="router.navigate(['/transactions'])">
+      <mat-icon>arrow_back</mat-icon> Volver
+    </button>
+  </div>
+
+  @if (isEdit()) {
+    <div class="edit-notice">
+      <mat-icon>info</mat-icon>
+      <span>Solo es posible modificar el <strong>detalle</strong> y la <strong>fecha</strong>. El tipo, producto, cantidad y precio son inmutables para preservar la auditoría.</span>
+    </div>
+  }
+
+  @if (loadingData()) {
+    <div class="loading-center"><mat-spinner diameter="48" /></div>
+  } @else {
+    <div class="form-card-container glass-card" style="padding: 28px;" @scaleIn>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="form-grid">
+
+          @if (!isEdit()) {
+            <mat-form-field appearance="outline">
+              <mat-label>Tipo *</mat-label>
+              <mat-select formControlName="type">
+                <mat-option value="Purchase">
+                  <mat-icon>arrow_downward</mat-icon> Compra
+                </mat-option>
+                <mat-option value="Sale">
+                  <mat-icon>arrow_upward</mat-icon> Venta
+                </mat-option>
+              </mat-select>
+              @if (form.get('type')?.hasError('required') && form.get('type')?.touched) {
+                <mat-error>El tipo es obligatorio.</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Producto *</mat-label>
+              <mat-select formControlName="productId" (selectionChange)="onProductChange()">
+                @for (p of products(); track p.id) {
+                  <mat-option [value]="p.id">{{ p.name }} — Stock: {{ p.stock }}</mat-option>
+                }
+              </mat-select>
+              @if (form.get('productId')?.hasError('required') && form.get('productId')?.touched) {
+                <mat-error>El producto es obligatorio.</mat-error>
+              }
+            </mat-form-field>
+
+            @if (selectedProduct()) {
+              <div class="stock-info-banner span-2">
+                <div class="stock-info-icon">
+                  <mat-icon>inventory</mat-icon>
+                </div>
+                <div class="stock-info-body">
+                  <strong>{{ selectedProduct()!.name }}</strong>
+                  <span>
+                    Stock disponible:
+                    <strong [class]="selectedProduct()!.stock === 0 ? 'stock-zero' : selectedProduct()!.stock < 5 ? 'stock-low' : 'stock-ok'">
+                      {{ selectedProduct()!.stock }}
+                    </strong>
+                  </span>
+                </div>
+              </div>
+            }
+
+            <mat-form-field appearance="outline">
+              <mat-label>Cantidad *</mat-label>
+              <input matInput type="number" formControlName="quantity" min="1" />
+              <mat-icon matSuffix>tag</mat-icon>
+              @if (form.get('quantity')?.hasError('required') && form.get('quantity')?.touched) {
+                <mat-error>La cantidad es obligatoria.</mat-error>
+              }
+              @if (form.get('quantity')?.hasError('min')) {
+                <mat-error>Debe ser mayor a 0.</mat-error>
+              }
+              @if (form.get('quantity')?.hasError('stockExceeded')) {
+                <mat-error>Stock insuficiente. Disponible: {{ selectedProduct()?.stock }}</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Precio Unitario *</mat-label>
+              <span matPrefix>$&nbsp;</span>
+              <input matInput type="number" formControlName="unitPrice" min="0" step="0.01" />
+              @if (form.get('unitPrice')?.hasError('required') && form.get('unitPrice')?.touched) {
+                <mat-error>El precio unitario es obligatorio.</mat-error>
+              }
+              @if (form.get('unitPrice')?.hasError('min')) {
+                <mat-error>Debe ser mayor o igual a 0.</mat-error>
+              }
+            </mat-form-field>
+
+            <div class="total-display span-2">
+              <div class="total-display-label">
+                <mat-icon>calculate</mat-icon>
+                <span>Total calculado</span>
+              </div>
+              <strong class="total-display-value">{{ totalCalculado() | currency:'USD' }}</strong>
+            </div>
+          }
+
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="date" />
+            <mat-datepicker-toggle matIconSuffix [for]="picker" />
+            <mat-datepicker #picker />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" [class]="isEdit() ? '' : 'span-2'">
+            <mat-label>Detalle / Notas</mat-label>
+            <textarea matInput formControlName="detail" rows="3" placeholder="Descripción adicional..."></textarea>
+          </mat-form-field>
+
+        </div>
+
+        <div class="form-footer">
+          <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || saving()">
+            @if (saving()) {
+              <mat-spinner diameter="18" />
+            } @else {
+              <mat-icon>save</mat-icon>
+            }
+            {{ isEdit() ? 'Guardar cambios' : 'Registrar Transacción' }}
+          </button>
+          <button mat-button type="button" (click)="router.navigate(['/transactions'])">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

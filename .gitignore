@@ -94,7 +94,6 @@ coverage/
 *.lcov
 *.trx
 *.xml
-*.html
 **/TestResults/
 frontend/inventory-app/.angular/cache/
 

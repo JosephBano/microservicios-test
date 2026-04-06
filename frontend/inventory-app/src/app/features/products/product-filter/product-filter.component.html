@@ -1,0 +1,38 @@
+<form [formGroup]="form" (ngSubmit)="apply()" class="filter-bar">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="name" placeholder="Buscar..." />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Categoría</mat-label>
+    <input matInput formControlName="category" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Precio mín.</mat-label>
+    <span matPrefix>$&nbsp;</span>
+    <input matInput type="number" formControlName="minPrice" min="0" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Precio máx.</mat-label>
+    <span matPrefix>$&nbsp;</span>
+    <input matInput type="number" formControlName="maxPrice" min="0" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Stock mín.</mat-label>
+    <input matInput type="number" formControlName="minStock" min="0" />
+  </mat-form-field>
+
+  <div class="filter-actions">
+    <button mat-flat-button color="primary" type="submit">
+      <mat-icon>search</mat-icon> Buscar
+    </button>
+    <button mat-button type="button" (click)="clear()">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </div>
+</form>

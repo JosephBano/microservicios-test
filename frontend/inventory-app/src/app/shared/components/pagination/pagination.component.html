@@ -1,0 +1,22 @@
+<div class="pagination">
+  <span class="pagination-info">
+    {{ totalCount() }} registro{{ totalCount() !== 1 ? 's' : '' }}
+    &nbsp;·&nbsp;
+    Página {{ currentPage() }} de {{ totalPages() }}
+  </span>
+  <div class="pagination-controls">
+    <button class="page-btn" [disabled]="isFirst()" (click)="go(1)" aria-label="Primera página">
+      <mat-icon>first_page</mat-icon>
+    </button>
+    <button class="page-btn" [disabled]="isFirst()" (click)="go(currentPage() - 1)" aria-label="Página anterior">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <span class="page-indicator">{{ currentPage() }}</span>
+    <button class="page-btn" [disabled]="isLast()" (click)="go(currentPage() + 1)" aria-label="Página siguiente">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+    <button class="page-btn" [disabled]="isLast()" (click)="go(totalPages())" aria-label="Última página">
+      <mat-icon>last_page</mat-icon>
+    </button>
+  </div>
+</div>

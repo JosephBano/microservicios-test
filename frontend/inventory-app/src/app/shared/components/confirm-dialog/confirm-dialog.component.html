@@ -1,0 +1,16 @@
+<div class="dialog-content">
+  <div class="dialog-icon">
+    <mat-icon>warning_amber</mat-icon>
+  </div>
+  <h2 class="dialog-title">{{ data.title }}</h2>
+  <p class="dialog-message">{{ data.message }}</p>
+  <div class="dialog-actions">
+    <button mat-button [mat-dialog-close]="false" class="btn-cancel">
+      {{ data.cancelText ?? 'Cancelar' }}
+    </button>
+    <button mat-flat-button color="warn" [mat-dialog-close]="true" class="btn-confirm">
+      <mat-icon>delete</mat-icon>
+      {{ data.confirmText ?? 'Confirmar' }}
+    </button>
+  </div>
+</div>

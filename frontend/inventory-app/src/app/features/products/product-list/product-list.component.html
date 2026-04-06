@@ -1,0 +1,107 @@
+<div class="page-container" @pageEnter>
+
+  <div class="page-header">
+    <h1>Productos</h1>
+    <button mat-flat-button color="primary" (click)="router.navigate(['/products/new'])">
+      <mat-icon>add</mat-icon> Nuevo Producto
+    </button>
+  </div>
+
+  <div class="stat-chips">
+    <div class="stat-chip">
+      <div class="stat-icon blue"><mat-icon>inventory_2</mat-icon></div>
+      <div>
+        <div class="stat-value">{{ totalCount() }}</div>
+        <div class="stat-label">Total productos</div>
+      </div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-icon green"><mat-icon>check_circle</mat-icon></div>
+      <div>
+        <div class="stat-value">{{ okCount() }}</div>
+        <div class="stat-label">En stock</div>
+      </div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-icon amber"><mat-icon>warning</mat-icon></div>
+      <div>
+        <div class="stat-value">{{ lowCount() }}</div>
+        <div class="stat-label">Stock bajo</div>
+      </div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-icon red"><mat-icon>remove_circle</mat-icon></div>
+      <div>
+        <div class="stat-value">{{ zeroCount() }}</div>
+        <div class="stat-label">Sin stock</div>
+      </div>
+    </div>
+  </div>
+
+  <app-product-filter (filterChange)="onFilterChange($event)" />
+
+  @if (loading()) {
+    <div class="skeleton-grid">
+      @for (_ of skeletons; track $index) {
+        <div class="skeleton-card shimmer"></div>
+      }
+    </div>
+  } @else if (products().length === 0) {
+    <div class="empty-state">
+      <mat-icon>inventory_2</mat-icon>
+      <h3>Sin resultados</h3>
+      <p>No se encontraron productos con los filtros aplicados.</p>
+      <button mat-flat-button color="primary" (click)="router.navigate(['/products/new'])">
+        <mat-icon>add</mat-icon> Agregar Producto
+      </button>
+    </div>
+  } @else {
+    <div class="products-grid" [@listStagger]="products().length">
+      @for (p of products(); track p.id) {
+        <article class="product-card">
+          <div class="card-image">
+            @if (p.imageUrl) {
+              <img [src]="p.imageUrl" [alt]="p.name" (error)="onImgError($event)" />
+            } @else {
+              <mat-icon>image_not_supported</mat-icon>
+            }
+          </div>
+          <div class="card-body">
+            <span class="card-category">{{ p.category }}</span>
+            <div class="card-name">{{ p.name }}</div>
+            @if (p.description) {
+              <p class="card-desc">{{ p.description }}</p>
+            }
+            <div class="card-footer">
+              <span class="card-price">{{ p.price | currency:'USD' }}</span>
+              <span [class]="stockBadgeClass(p.stock)">
+                <mat-icon>{{ p.stock === 0 ? 'remove_circle' : p.stock < 5 ? 'warning' : 'check_circle' }}</mat-icon>
+                {{ p.stock }}
+              </span>
+            </div>
+            <div class="card-actions">
+              <button mat-icon-button matTooltip="Editar"
+                (click)="router.navigate(['/products', p.id, 'edit'])">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button matTooltip="Historial de transacciones"
+                (click)="router.navigate(['/products', p.id, 'history'])">
+                <mat-icon>history</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" matTooltip="Eliminar" (click)="confirmDelete(p)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [totalCount]="totalCount()"
+      (pageChange)="onPageChange($event)"
+    />
+  }
+</div>

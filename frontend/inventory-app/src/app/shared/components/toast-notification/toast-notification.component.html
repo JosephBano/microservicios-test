@@ -1,0 +1,13 @@
+<div class="toast-container">
+  @for (toast of notify.toasts(); track toast.id) {
+    <div class="toast" [class]="'toast--' + toast.type" @toastSlide>
+      <div class="toast-icon-wrap">
+        <mat-icon>{{ iconFor(toast.type) }}</mat-icon>
+      </div>
+      <span class="toast-msg">{{ toast.message }}</span>
+      <button class="toast-close" (click)="notify.dismiss(toast.id)" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
+</div>

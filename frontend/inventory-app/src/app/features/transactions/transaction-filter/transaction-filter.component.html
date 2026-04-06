@@ -1,0 +1,33 @@
+<form [formGroup]="form" (ngSubmit)="apply()" class="filter-bar">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Tipo</mat-label>
+    <mat-select formControlName="type">
+      <mat-option value="">Todos</mat-option>
+      <mat-option value="Purchase">Compra</mat-option>
+      <mat-option value="Sale">Venta</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Desde</mat-label>
+    <input matInput [matDatepicker]="pickerFrom" formControlName="dateFrom" />
+    <mat-datepicker-toggle matIconSuffix [for]="pickerFrom" />
+    <mat-datepicker #pickerFrom />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Hasta</mat-label>
+    <input matInput [matDatepicker]="pickerTo" formControlName="dateTo" />
+    <mat-datepicker-toggle matIconSuffix [for]="pickerTo" />
+    <mat-datepicker #pickerTo />
+  </mat-form-field>
+
+  <div class="filter-actions">
+    <button mat-flat-button color="primary" type="submit">
+      <mat-icon>search</mat-icon> Buscar
+    </button>
+    <button mat-button type="button" (click)="clear()">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </div>
+</form>
