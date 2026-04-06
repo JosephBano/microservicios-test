@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -34,11 +34,11 @@ export class ProductFormComponent implements OnInit {
 
   readonly form = inject(FormBuilder).group({
     name:        ['', [Validators.required, Validators.maxLength(150)]],
-    description: [''],
-    category:    ['', Validators.required],
-    price:       [0, [Validators.required, Validators.min(0)]],
-    stock:       [0, [Validators.required, Validators.min(0)]],
-    imageUrl:    ['', Validators.pattern(/^https?:\/\/.+/)]
+    description: ['', Validators.maxLength(500)],
+    category:    ['', [Validators.required, Validators.maxLength(100)]],
+    price:       [0, [Validators.required, Validators.min(0), Validators.max(999999.99), maxDecimals(2)]],
+    stock:       [0, [Validators.required, Validators.min(0), Validators.max(999999), isInteger]],
+    imageUrl:    ['', [Validators.maxLength(500), Validators.pattern(/^https?:\/\/.+/)]]
   });
 
   ngOnInit(): void {
@@ -94,4 +94,19 @@ export class ProductFormComponent implements OnInit {
   onImgError(event: Event): void {
     (event.target as HTMLImageElement).style.display = 'none';
   }
+}
+
+function maxDecimals(max: number) {
+  return (c: AbstractControl): ValidationErrors | null => {
+    const val = c.value;
+    if (val === null || val === undefined || val === '') return null;
+    const parts = val.toString().split('.');
+    return parts.length > 1 && parts[1].length > max ? { maxDecimals: { max } } : null;
+  };
+}
+
+function isInteger(c: AbstractControl): ValidationErrors | null {
+  const val = c.value;
+  if (val === null || val === undefined || val === '') return null;
+  return Number.isInteger(Number(val)) ? null : { integer: true };
 }

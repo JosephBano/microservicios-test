@@ -77,6 +77,12 @@
               @if (form.get('quantity')?.hasError('min')) {
                 <mat-error>Debe ser mayor a 0.</mat-error>
               }
+              @if (form.get('quantity')?.hasError('max')) {
+                <mat-error>Máximo 9,999 unidades por transacción.</mat-error>
+              }
+              @if (form.get('quantity')?.hasError('integer')) {
+                <mat-error>Debe ser un número entero.</mat-error>
+              }
               @if (form.get('quantity')?.hasError('stockExceeded')) {
                 <mat-error>Stock insuficiente. Disponible: {{ selectedProduct()?.stock }}</mat-error>
               }
@@ -92,11 +98,16 @@
               @if (form.get('unitPrice')?.hasError('min')) {
                 <mat-error>Debe ser mayor o igual a 0.</mat-error>
               }
+              @if (form.get('unitPrice')?.hasError('max')) {
+                <mat-error>Máximo $999,999.99.</mat-error>
+              }
+              @if (form.get('unitPrice')?.hasError('maxDecimals')) {
+                <mat-error>Máximo 2 decimales.</mat-error>
+              }
             </mat-form-field>
 
             <div class="total-display span-2">
               <div class="total-display-label">
-                <mat-icon>calculate</mat-icon>
                 <span>Total calculado</span>
               </div>
               <strong class="total-display-value">{{ totalCalculado() | currency:'USD' }}</strong>
@@ -112,7 +123,11 @@
 
           <mat-form-field appearance="outline" [class]="isEdit() ? '' : 'span-2'">
             <mat-label>Detalle / Notas</mat-label>
-            <textarea matInput formControlName="detail" rows="3" placeholder="Descripción adicional..."></textarea>
+            <textarea matInput formControlName="detail" rows="3" placeholder="Descripción adicional..." maxlength="500"></textarea>
+            <mat-hint align="end">{{ form.get('detail')?.value?.length ?? 0 }} / 500</mat-hint>
+            @if (form.get('detail')?.hasError('maxlength')) {
+              <mat-error>Máximo 500 caracteres.</mat-error>
+            }
           </mat-form-field>
 
         </div>

@@ -46,10 +46,10 @@ export class TransactionFormComponent implements OnInit {
   readonly form = inject(FormBuilder).group({
     type:      ['', Validators.required],
     productId: ['', Validators.required],
-    quantity:  [1, [Validators.required, Validators.min(1)]],
-    unitPrice: [0, [Validators.required, Validators.min(0)]],
+    quantity:  [1, [Validators.required, Validators.min(1), Validators.max(9999), isInteger]],
+    unitPrice: [0, [Validators.required, Validators.min(0), Validators.max(999999.99), maxDecimals(2)]],
     date:      [null as Date | null],
-    detail:    ['']
+    detail:    ['', Validators.maxLength(500)]
   });
 
   readonly totalCalculado = computed(() => {
@@ -138,4 +138,19 @@ export class TransactionFormComponent implements OnInit {
       });
     }
   }
+}
+
+function maxDecimals(max: number) {
+  return (c: AbstractControl): ValidationErrors | null => {
+    const val = c.value;
+    if (val === null || val === undefined || val === '') return null;
+    const parts = val.toString().split('.');
+    return parts.length > 1 && parts[1].length > max ? { maxDecimals: { max } } : null;
+  };
+}
+
+function isInteger(c: AbstractControl): ValidationErrors | null {
+  const val = c.value;
+  if (val === null || val === undefined || val === '') return null;
+  return Number.isInteger(Number(val)) ? null : { integer: true };
 }
